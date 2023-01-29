@@ -130,6 +130,8 @@ void delete_empty_monome(monome_type *p){
     else{
         safe_remove(p->next);
         p->next = NULL;
+        p->coef = 0.;
+        p->exponent =0;
     }
 
 }
@@ -247,7 +249,7 @@ monome_type* multiply(monome_type *p,monome_type *q){
 }
 
 float evaluate(monome_type *p,float x,int curr_exp){
-    if (p->next==NULL){
+    if (p->next==NULL && curr_exp==p->exponent){
         return p->coef;
     }
     else{
