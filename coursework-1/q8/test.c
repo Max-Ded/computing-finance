@@ -82,7 +82,7 @@ int test_subtraction(){
     poly_q = init_polynome(1.,2);
     add_monome(poly_q,3,0);
     // Q = 3.0 + 1.0.x^2
-    poly_r = substract(poly_p,poly_q);
+    poly_r = subtract(poly_p,poly_q);
 
     print_poly(poly_p);
     printf("-\n");
@@ -96,7 +96,7 @@ int test_subtraction(){
     printf("-\n");
     print_poly(poly_pp);
     printf("=\n");
-    poly_rr = substract(poly_pp,poly_pp);
+    poly_rr = subtract(poly_pp,poly_pp);
     print_poly(poly_rr);
 
     safe_remove(poly_p);
@@ -171,24 +171,25 @@ int test_evalution(){
 
     poly_r = init_polynome(3,4);
     // R = 3.X^4
-
+    printf("P = ");
     print_poly(poly_p);
     printf("P(%0.1f) = %0.1f\n",2.,evaluate(poly_p,2.,0)); // 25
     printf("P(%0.1f) = %0.1f\n",5.,evaluate(poly_p,5.,0)); // 135
     printf("P(%0.1f) = %0.1f\n",0.5,evaluate(poly_p,0.5,0)); //3
     printf("P(%0.1f) = %0.1f\n",0.,evaluate(poly_p,0.,0)); //3
     printf("============\n");
+    printf("Q = ");
     print_poly(poly_q);
     printf("Q(%0.1f) = %0.1f\n",10.,evaluate(poly_q,10.,0)); // 106100.0
     printf("Q(%0.1f) = %0.1f\n",-8.,evaluate(poly_q,-8.,0)); // -35776.0
     printf("Q(%0.00001f) = %0.1f\n",1.1,evaluate(poly_q,1.1,0)); // 10.806510000000003
     printf("Q(%0.1f) = %0.1f\n",0.,evaluate(poly_q,0.,0)); //0
     printf("============\n");
+    printf("R = ");
     print_poly(poly_r);
     printf("R(%0.1f) = %0.1f\n",10.,evaluate(poly_r,10.,0)); // 30000
     printf("R(%0.1f) = %0.1f\n",-1.,evaluate(poly_r,-1.,0)); // 3
     printf("R(%0.1f) = %0.1f\n",1.5,evaluate(poly_r,1.5,0)); //15.1875
-    printf("============\n");
     safe_remove(poly_p);
     safe_remove(poly_q);
     safe_remove(poly_r);

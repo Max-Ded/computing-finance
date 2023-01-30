@@ -5,13 +5,18 @@
 
 void print_poly(struct monome *p){
     while (p!=NULL){
-        if (p->exponent>0){
-            printf("%0.1f.x^%d",p->coef,p->exponent);
+        // Iterate through the nodes
+        if (p->exponent>1){ 
+            printf("%0.1f.X^%d",p->coef,p->exponent);
+        }
+        else if (p->exponent==1){
+            printf("%0.1f.X",p->coef);
         }
         else{
             printf("%0.1f",p->coef);
         }
         if (p->next!=NULL){
+            // Only print a "+" if there is a next term in the polynomial
             printf(" + ");
         }
         p=p->next;
@@ -21,7 +26,7 @@ void print_poly(struct monome *p){
 
 
 int is_poly_null(monome_type *p){
-    // All coefficient in the polynomial are 0. (not degree 0 necesseraly)
+    // All coefficient in the polynomial are 0. (not degree 0 necesseraly) => returns 1
     monome_type* current = p;
     int all_null = 1;
     while (current!=NULL){
@@ -34,6 +39,7 @@ int is_poly_null(monome_type *p){
 }
 
 int order_polynome(monome_type *p){
+    // Get the degree of a polynomial
     int highest_expo = 0;
     while (p!=NULL){
         highest_expo = p->exponent;
@@ -43,12 +49,14 @@ int order_polynome(monome_type *p){
 }
 
 void push_end(monome_type *p,float coef,int exponent){
+    // Push a node with coefficient coef and exponent at the end of the polynomial
     monome_type *current;
     current = p;
     while(current->next!=NULL){
         current = current->next;
+        // go to the end of the list
     }
-    monome_type *new = (monome_type *) malloc(sizeof(monome_type));
+    monome_type *new = (monome_type *) malloc(sizeof(monome_type)); // allocate memory to the new node
     new->coef = coef;
     new->exponent = exponent;
     new->next = NULL;
@@ -57,6 +65,7 @@ void push_end(monome_type *p,float coef,int exponent){
 
 
 int get_exposant_next_in_line(monome_type *p){
+    // get the exposant in the next node from the input (to the right), returns +INF (1e5 here) if it's the last node
     monome_type *next = p->next;
     if (next!=NULL){
         return next->exponent;
@@ -68,31 +77,25 @@ int get_exposant_next_in_line(monome_type *p){
 
 void push_after_p(monome_type *target,float coef,int exponent){
     // Push a monome (coef,exponent) after the monome pointed by p (p->exponent inferior or equal to exponent)
-    //if we don't push the monome to the begining of the list
     if (target->exponent==exponent){
-        // add the coeff of the monome if they are the same exponent
+        // Add the coeff of the monome if they are the same exponent
         target->coef += coef;
     }
     else if (get_exposant_next_in_line(target)==exponent){
-        // add the coeff of the monome if they are the same exponent
+        // Add the coeff of the monome to the next node if they have the same exponent
         target->next->coef += coef;
     }
     else{
+        // Insert the new block
         monome_type *new = init_polynome(coef,exponent);
         new->next = target->next;
         target->next = new;
     }
 }
 
-monome_type* refactor_if_all_element_null(monome_type* p){
-    if (is_poly_null(p)==1){
-        safe_remove(p);
-        return init_polynome(0.,0);
-    }
-    return p;
-}
-
 void delete_first_node(monome_type *p){
+    // Delete the first node of the linked list ad copy the remanining to tthe reference so it's still usable
+    // USE CASE : The first coef becomes null
     monome_type *current,*before_current;
     current=p;
     while (current->next!=NULL){
@@ -107,11 +110,12 @@ void delete_first_node(monome_type *p){
 
 
 void delete_empty_monome(monome_type *p){
-    // travels the polynome for monome with 0. coef
+    // travels the polynome for monome with 0. coef and deletes them => depends on the position of the zero coeff
     monome_type *before,*current;
     before = NULL;
     current = p;
     if (current->coef==0. && !is_poly_null(p)){
+            // If the first coef is null and the polynomial isn't the 0 element
             delete_first_node(p);
             return;
     }
@@ -128,6 +132,7 @@ void delete_empty_monome(monome_type *p){
         }
     }
     else{
+        // it the polynomial is all null we remove the next nodes in line and change it to the 0 element
         safe_remove(p->next);
         p->next = NULL;
         p->coef = 0.;
@@ -138,15 +143,16 @@ void delete_empty_monome(monome_type *p){
 
 
 int check_poly_null(monome_type *p){
-    // is the null element
+    // is the null element 0.X^0
     return p->next==NULL && p->coef ==0. && p->exponent==0;
 }
 
 void push_beginning(monome_type *p,float coef, int exponent){
+    // Push a node at the begining of the list (copy all information one block forward and push a new node)
     monome_type *current;
     current = p;
-    float coef_curr,coef_before;
-    int exponent_curr,exponent_before;
+    float coef_curr,coef_before;  // t and t-1 lag
+    int exponent_curr,exponent_before; // t and t-1 lag
     exponent_before = exponent;
     coef_before = coef;
 
@@ -169,6 +175,7 @@ void add_monome(monome_type *p,float coef,int exponent){
         p->exponent=exponent;
     }
     else if(exponent<p->exponent){
+        // if we add something that should go before the beginning of the list
         push_beginning(p,coef,exponent);
     }
     else{
@@ -198,6 +205,7 @@ void safe_remove(monome_type *p){
 }
 
 monome_type* init_polynome(float coef,int exponent){
+    // create the first block in memory for the linked list, initialized with the args
     monome_type *head = NULL;
     head = (monome_type *) malloc(sizeof(monome_type));
     head->coef = coef;
@@ -207,6 +215,7 @@ monome_type* init_polynome(float coef,int exponent){
 }
 
 monome_type* add(monome_type *p,monome_type *q){
+    // Addition of two polynomial => returns a reference to the result
     monome_type *r = init_polynome(0.,0);
     monome_type *current_p,*current_q;
     current_p = p;
@@ -223,6 +232,7 @@ monome_type* add(monome_type *p,monome_type *q){
 }
 
 monome_type* multiply(monome_type *p,monome_type *q){
+    // Multiplication of two polynomial => returns a reference to the result
     monome_type *r = init_polynome(0.,0);
     monome_type *current_p,*current_q;
     current_p = p;
@@ -249,10 +259,13 @@ monome_type* multiply(monome_type *p,monome_type *q){
 }
 
 float evaluate(monome_type *p,float x,int curr_exp){
+    // Evaluation of two polynomial => returns the float result
     if (p->next==NULL && curr_exp==p->exponent){
+        // If we have reached our target exponant and it's the last node in the list => return the coef
         return p->coef;
     }
     else{
+        // is the exponant equal to the current node ? If not we multiply by x and call the function again increasing curr_exp
         if (p->exponent==curr_exp){
             return evaluate(p->next,x,curr_exp+1) *x + p->coef;
         }
@@ -262,7 +275,8 @@ float evaluate(monome_type *p,float x,int curr_exp){
     }
 }
 
-monome_type* substract(monome_type *p,monome_type *q){
+monome_type* subtract(monome_type *p,monome_type *q){
+    // Subtration of two polynomial => returns a reference to the result
     monome_type *r = init_polynome(0.,0);
     monome_type *current_p,*current_q;
     current_p =p;
