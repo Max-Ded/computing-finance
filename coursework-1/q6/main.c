@@ -15,6 +15,7 @@ void play(){
         print_grid(grid,!end); // to print the grid at the current state of the game
         printf("%sInput your choice : ",alert);
         scanf(" %c",&choice);
+        getchar();
         alert = "";
         switch (choice){
             // for each legal move (1-9), we check if can insert the character, and we increment the number of legal move, else we print an alert

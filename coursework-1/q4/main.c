@@ -20,7 +20,7 @@ void read_remaining(char *before,int remaining){
 
 int main(int argc,char *args){
     char  *ptr = NULL;
-    int N=3;
+    int N=200;
     read_remaining(ptr,N);
     return 0;
 }
