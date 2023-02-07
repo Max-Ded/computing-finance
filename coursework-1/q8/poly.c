@@ -259,7 +259,7 @@ monome_type* multiply(monome_type *p,monome_type *q){
 }
 
 float evaluate(monome_type *p,float x,int curr_exp){
-    // Evaluation of two polynomial => returns the float result
+    // Evaluation of a polynomial => returns the float result
     if (p->next==NULL && curr_exp==p->exponent){
         // If we have reached our target exponant and it's the last node in the list => return the coef
         return p->coef;
