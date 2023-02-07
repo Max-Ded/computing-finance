@@ -9,11 +9,14 @@ int main(){
     highest = read;
     lowest = read;
     while (read>0){
-        scanf("%d",&read);
+        // While the read number is not negative
+        scanf("%d",&read); //overwrite the read value
         if (lowest>read){
+            // overwrite lowest if we have inputed a lower number
             lowest = read;
         }
         if (highest<read){
+            // overwrite highest if we have inputed a greater number
             highest=read;
         }
         count ++;
