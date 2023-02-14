@@ -16,7 +16,7 @@ int fraction_works_for_sleepy(struct two_digit num,struct two_digit den){
         }
     }
     if (num.tens==den.units){
-        check_equality = get_value(num) * den.units == get_value(den) * num.tens;
+        check_equality = get_value(num) * den.tens == get_value(den) * num.units;
         if (check_equality){
             return 1;
         }
