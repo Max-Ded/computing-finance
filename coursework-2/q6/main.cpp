@@ -24,6 +24,7 @@ void test_construction(){
     Vector array_to_vec = Vector(5,a);
     array_to_vec.print();
 
+    cout << "Vector-initialized vector (copy of the last vector) : ";
     Vector vec_copy = Vector(array_to_vec);
     vec_copy.print();
     cout <<endl << endl;
@@ -49,6 +50,13 @@ void test_operator(){
     cout <<"B = ";
     vec_2.print();
     
+    cout <<"B[4] = 40" << endl;
+    cout <<"B[3] = 30" << endl;
+    const int i = 4;
+    vec_2[i] +=1;
+    cout <<"B = ";
+    vec_2.print();
+    vec_1.print();
     cout << endl << endl;
 }
 

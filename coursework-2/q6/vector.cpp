@@ -73,8 +73,7 @@ inline const double& Vector :: operator[](const int i) const{
     /// @brief Overload the [] operator without modifying its content (to access READ-ONLY the content of the vector)
     /// @param i i'th element of the vector
     /// @return the read-only i'th element of the vector
-    const double& result = v[i];
-    return result;
+    return v[i];
 }
 
 void Vector :: resize(int newn){
