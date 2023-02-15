@@ -62,34 +62,17 @@ Vector& Vector :: operator=(const Vector& rhs){
     return *this;
 }
 
-inline double& Vector :: operator[](const int i){
-    /// @brief Access the i'th element from the vector
-    /// @param i : int index of element in the vector
-    /// @return Reference to the i'th element
-    return v[i];
-}
-
-inline const double& Vector :: operator[](const int i) const{
-    /// @brief Overload the [] operator without modifying its content (to access READ-ONLY the content of the vector)
-    /// @param i i'th element of the vector
-    /// @return the read-only i'th element of the vector
-    return v[i];
-}
-
 void Vector :: resize(int newn){
-    /// @brief Resize the vector, deletes its old content
+    /// @brief Resize the vector, deletes its old content and fills the new one with zero
     /// @param newn new size of the vector
     nn = newn;
     delete[] v;
     v = new double[nn];
+    for (int i =0; i<newn;i++){
+        v[i]=0.;
+    }
 }
 
-
-int Vector :: size() const{
-    /// @brief return the int size of the vector
-    /// @return Size of the vector
-    return nn;
-}
 
 void Vector :: assign(int newn , double a){
     /// @brief resize and assign a constant value
@@ -103,7 +86,7 @@ void Vector :: assign(int newn , double a){
     }
 }
 
-void Vector :: print(){
+void Vector :: print() const{
     /// @brief Print the content of the vector and its size
     std :: cout << size() << " element(s) ";
     if (nn>0){
