@@ -1,15 +1,6 @@
 #include "vector.h"
 #include <iostream>
-
-Vector :: Vector(int n){
-    /// @brief Create a vector of size n filled with 0.
-    /// @param n  : int size of the vector
-    nn = n;
-    v = new double[n];
-    for (int i =0;i<n;i++){
-        v[i]=0.;
-    }
-}
+#include <sstream>
 
 Vector :: Vector(){
     /// @brief Create an empty vector with content NULL
@@ -17,10 +8,30 @@ Vector :: Vector(){
     v = nullptr; 
 }
 
+
+Vector :: Vector(int n){
+    /// @brief Create a vector of size n filled with 0.
+    /// @param n  : int size of the vector
+    if (n<0){
+        //Raises an error if the size is negative
+        throw std::invalid_argument(std::string("Vector size should be positive, size given was : " + std::to_string(n)));
+    }
+    nn = n;
+    v = new double[n];
+    for (int i =0;i<n;i++){
+        v[i]=0.;
+    }
+}
+
+
 Vector :: Vector(int n, double a){
     /// @brief Create a vector with size n filled with the value (double) a
     /// @param n : int size of the vector
     /// @param a : double value to fill the vector
+    if (n<0){
+        //Raises an error if the size is negative
+        throw std::invalid_argument(std::string("Vector size should be positive, size given was : " + std::to_string(n)));
+    }
     nn = n;
     v = new double[n]; // create the array pointer in the heap
     for (int i=0;i<n;i++){
@@ -32,6 +43,10 @@ Vector :: Vector(int n, const double* a){
     /// @brief Create a vector from an array
     /// @param n : int size of the vector
     /// @param a : array of size n to copy the value from
+    if (n<0){
+        //Raises an error if the size is negative
+        throw std::invalid_argument(std::string("Vector size should be positive, size given was : " + std::to_string(n)));
+    }
     nn = n;
     v = new double[n];
     for (int i=0;i<n;i++){
@@ -65,6 +80,10 @@ Vector& Vector :: operator=(const Vector& rhs){
 void Vector :: resize(int newn){
     /// @brief Resize the vector, deletes its old content and fills the new one with zero
     /// @param newn new size of the vector
+    if (newn<0){
+        //Raises an error if the size is negative
+        throw std::invalid_argument(std::string("Vector size should be positive, size given was : " + std::to_string(newn)));
+    }
     nn = newn;
     delete[] v;
     v = new double[nn];
@@ -78,6 +97,10 @@ void Vector :: assign(int newn , double a){
     /// @brief resize and assign a constant value
     /// @param newn : int new size of the vector
     /// @param a : double to fill the content of the vector 
+    if (newn<0){
+        //Raises an error if the size is negative
+        throw std::invalid_argument(std::string("Vector size should be positive, size given was : " + std::to_string(newn)));
+    }
     nn = newn;
     delete[] v;
     v = new double[nn];

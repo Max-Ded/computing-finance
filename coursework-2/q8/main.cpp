@@ -31,6 +31,8 @@ class BlackScholesCallFunctor{
         double operator()(double sigma) const;
 };
 
+BlackScholesCallFunctor :: BlackScholesCallFunctor(double T,double K,double S,double r) : T(T), K(K), S(S) ,r(r){}
+
 double BlackScholesCallFunctor :: operator()(double sigma) const{
     /// @brief Compute the call price with the class attribute and parameter sigma
     /// @param sigma volatility
@@ -40,8 +42,6 @@ double BlackScholesCallFunctor :: operator()(double sigma) const{
     double C = N(d1)*S - N(d2) * K * exp(-r*T);
     return C;
 }
-
-BlackScholesCallFunctor :: BlackScholesCallFunctor(double T,double K,double S,double r) : T(T), K(K), S(S) ,r(r){}
 
 template <typename T>
 double interval_bisection(double y_target ,double left,double right,double epsilon,T functor){
@@ -55,11 +55,10 @@ double interval_bisection(double y_target ,double left,double right,double epsil
     /// @return pre-image of y_target
 
     double midpoint = (right+left) / 2; // compute center of the search imperial
-    double T_midpoint = functor(midpoint); //
 
-    while (abs(T_midpoint-y_target)>epsilon){
+    while (abs(functor(midpoint)-y_target)>epsilon){
         /// Iterate until convergence is reached (|f(x_target)-y_target| < epsilon)
-        if (T_midpoint < y_target){
+        if (functor(midpoint) < y_target){
             // if midpoint is below y_target, move the left bound
             left=midpoint;
         }
@@ -68,10 +67,10 @@ double interval_bisection(double y_target ,double left,double right,double epsil
             right = midpoint;
         }
         midpoint = (right+left) / 2; // re-compute midpoint
-        T_midpoint = functor(midpoint); // re-compute f(midpoint)
         }
     return midpoint;
 }
+
 
 int main(){
     double T = 0.25;
@@ -82,7 +81,7 @@ int main(){
 
     double left = 0;
     double right = 0.9;
-    double epsilon = 0.001;
+    double epsilon = 0.0001;
 
     cout << "Parameters : " << endl  << "T = " << T << endl << "K = " << K
          << endl << "S = " << S << endl << "r = " << r << endl << "C_target = "

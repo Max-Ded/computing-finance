@@ -28,6 +28,14 @@ void test_construction(){
     Vector vec_copy = Vector(array_to_vec);
     vec_copy.print();
 
+    cout << "Creating a vector with size -1 (!)"<<endl;
+    try{
+        Vector v = Vector(-1);
+    }
+    catch(const std::exception& e){
+        std::cerr << e.what() << '\n';
+    }
+    
 }
 
 void test_operator(){
@@ -79,12 +87,26 @@ void test_miscellianous(){
     Vector vec_1 = Vector(5,a); //{1,2,3,4,5}
     cout << "A = ";
     vec_1.print();
+
+    
+    cout << "Reassigning A to -10 elements (!)" <<endl;
+    try{
+        vec_1.resize(-10);
+    }
+    catch(const std::exception& e){
+        std::cerr << e.what() << '\n';
+    }
+    
+    cout << "A = ";
+    vec_1.print();
+
+    
     cout << "Resizing A to 6 elements" <<endl;
     vec_1.resize(6);
     cout << "A = ";
     vec_1.print();
 
-    cout << "Reassigning A to 3 elements filled with 3." <<endl;
+    cout << "Reassigning A to 3 elements filled with 3" <<endl;
     vec_1.assign(3,3.);
     cout << "A = ";
     vec_1.print();
@@ -93,5 +115,7 @@ int main(){
     test_construction();
     test_operator();
     test_miscellianous();
+
+
     return 0;
 }
