@@ -2,12 +2,72 @@
 #include <cstdlib>
 #include "price_path.h"
 #include <iostream>
+#include <functional>
 
 #ifndef M_PI
 #define M_PI 3.14159
 #endif
 #define min(a,b)            (((a) < (b)) ? (a) : (b))
 #define max(a,b)            (((a) > (b)) ? (a) : (b))
+
+using namespace std;
+
+// PATHGENERATOR Class
+
+PathGenerator::PathGenerator(std::function<double(double, double, double, double)> pricing_engine,int num_steps,double S0,double r,double T,double sigma) : pricing_engine(pricing_engine),num_steps(num_steps),S0(S0), r(r), T(T), sigma(sigma){}
+
+Path PathGenerator :: generate_path(){
+    double dt = T / static_cast<double>(num_steps);
+    double S = S0;
+
+    double min_S = INF;
+    double max_S = -INF;
+    double avg_S = 0; 
+
+    for (int i = 1; i <= num_steps; i++) {
+
+        S = pricing_engine(S,r,sigma,dt);        
+        min_S = min(S,min_S);
+        max_S = max(S,max_S);
+        avg_S += S/num_steps;
+    }
+
+    Path result = Path(min_S,max_S,avg_S,S);
+    return result;
+}
+
+double PathGenerator::get_r(){
+    return r;
+}
+double PathGenerator::get_T(){
+    return T;
+}
+double PathGenerator::get_sigma(){
+    return sigma;
+}
+double PathGenerator::get_S0(){
+    return S0;
+}
+// PATH class impl
+
+Path :: Path(double min_S,double max_S,double avg_S,double ST) : min_S(min_S),max_S(max_S),avg_S(avg_S),ST(ST){}
+Path :: Path(){}
+
+double Path::get_ST(){
+        return ST;
+}
+double Path::get_max_S(){
+        return max_S;
+}   
+double Path::get_min_S(){
+        return min_S;
+}
+double Path::get_avg_S(){
+        return avg_S;
+}
+
+
+// PRICING ENGINES
 
 double randn() // generates a standard normal random variable
 {
@@ -18,32 +78,17 @@ double randn() // generates a standard normal random variable
 }
 
 
-PricePath::PricePath(int num_steps,double S0,double r,double T,double sigma) : num_steps(num_steps),S0(S0), r(r), T(T), sigma(sigma){
-    double dt = T / static_cast<double>(num_steps);
-    double S = S0;
-
-    for (int i = 1; i <= num_steps; i++) {
-        double dW = sqrt(dt) * randn(); // generate a standard normal random variable
-        double drift = r * S * dt;
-        double diffusion = sigma * S * dW;
-        S = S + drift + diffusion;
-        min_S = min(S,min_S);
-        max_S = max(S,max_S);
-        avg_S += S/num_steps;
-    }
-
-    ST = S;
-}
-double PricePath::get_ST(){
-        return ST;
-}
-double PricePath::get_max_S(){
-        return max_S;
-}   
-double PricePath::get_min_S(){
-        return min_S;
-}
-double PricePath::get_avg_S(){
-        return avg_S;
+double BSM_pricing(double St_1,double r, double sigma, double dt){
+    double dW = sqrt(dt) * randn(); // generate a standard normal random variable
+    double drift = r * St_1 * dt;
+    double diffusion = St_1 * sigma  * dW; //
+    double St = St_1 + drift + diffusion;
+    return St;
 }
 
+double Bachelier_pricing(double St_1,double r, double sigma, double dt){
+    // dSt =r St dt + σ dWt,
+    double dW = sqrt(dt) * randn(); // generate a standard normal random variable
+    double St = St_1 + r * St_1 * dt + sigma * dW;
+    return St;
+}

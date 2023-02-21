@@ -5,13 +5,10 @@ class MonteCarloDerivatePricing{
     private:
         int N_sim;
         int num_steps;
-        double S0;
-        double sigma;
-        double r;
-        double T;
+        PathGenerator& path_generator;
         Payoff& payoff;
     public:
-        MonteCarloDerivatePricing(int N_sim,int num_steps,double S0,double sigma,double r, double T, Payoff& payoff);
-        double price_one_path();
+        MonteCarloDerivatePricing(int N_sim,PathGenerator& path_generator, Payoff& payoff);
+        double price_one_path(Path& path);
         double priceDerivative();
 };

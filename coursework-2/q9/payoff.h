@@ -9,16 +9,16 @@ class Payoff{
         double K;
         double V;
         std::string option_desc;
-        std::function<double(PricePath&, double)> payoff_func;
+        std::function<double(Path&, double)> payoff_func;
     public:
-        Payoff(std::function<double(PricePath&, double)> func,double K,std::string option_desc_string); // If payoff uses a strike price
-        double get_V(PricePath& ppath);
+        Payoff(std::function<double(Path&, double)> func,double K,std::string option_desc_string); // If payoff uses a strike price
+        double get_V(Path& path);
         double get_K();
         std::string get_option_desc();
 };
 
-double european_call(PricePath& ppath,double K);
-double european_put(PricePath& ppath,double K);
-double asian_call(PricePath& ppath,double K);
-double asian_put(PricePath& ppath,double K);
+double european_call(Path& path,double K);
+double european_put(Path& path,double K);
+double asian_call(Path& path,double K);
+double asian_put(Path& path,double K);
 #endif

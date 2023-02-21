@@ -2,6 +2,7 @@
 #include "derivative_pricing.h"
 #include "payoff.h"
 #include "price_path.h"
+#include "price_path.h"
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 
@@ -11,7 +12,7 @@ int main(){
 
     srand(time(0));
 
-    int N_sim = 1000;
+    int N_sim = 100000;
     double S0 = 100;
     double sigma = 0.5;
     double r=0.1;
@@ -19,11 +20,13 @@ int main(){
     double K = 95.;
     int num_steps = 100;
 
-    std::function<double(PricePath&, double)> payoff_func = &european_call;
+    std::function<double(double, double, double, double)> pricing_engine = &BSM_pricing;
+    std::function<double(Path&, double)> payoff_func = &european_call;
 
     Payoff payoff = Payoff(payoff_func,95,"European call");
+    PathGenerator path_generator = PathGenerator(pricing_engine,num_steps,S0,r,T,sigma);
     
-    MonteCarloDerivatePricing mc_pricing = MonteCarloDerivatePricing(N_sim,num_steps,S0,sigma,r,T,payoff);
+    MonteCarloDerivatePricing mc_pricing = MonteCarloDerivatePricing(N_sim,path_generator,payoff);
     std :: cout << "Option type : "<< payoff.get_option_desc() << std::endl << "K = " << payoff.get_K() << std::endl;
 
     double price = mc_pricing.priceDerivative();
