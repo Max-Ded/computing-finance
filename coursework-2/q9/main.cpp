@@ -20,22 +20,27 @@ int main(){
 
     srand(time(0));
 
-    int N_sim = 1000000;
+    int N_sim = 1000;
     double S0 = 100;
     double sigma = 0.5;
     double r=0.1;
     double T = 0.25;
-    double K = 95.;
+    double K = 105.;
     int num_steps = 100;
+    double barrier = 130;
+
+    
+    std::function<double(Path&, double)> payoff_func = &european_call;
+    Payoff payoff = Payoff(payoff_func,95,"European call");
+
+    // std::function<double(Path&, double,double)> payoff_func = &knock_out_european_call;
+    // Payoff payoff = Payoff(payoff_func,K,barrier,"Knock-out European call");
 
     std::function<double(double, double, double, double)> pricing_engine = &BSM_pricing;
-    std::function<double(Path&, double)> payoff_func = &european_call;
-
-    Payoff payoff = Payoff(payoff_func,95,"European call");
     PathGenerator path_generator = PathGenerator(pricing_engine,num_steps,S0,r,T,sigma);
     
     MonteCarloDerivatePricing mc_pricing = MonteCarloDerivatePricing(path_generator,payoff);
-    std :: cout << "Option type : "<< payoff.get_option_desc() << std::endl << "K = " << payoff.get_K() << std::endl;
+    std :: cout << "Option type : "<< payoff.get_option_desc() << std::endl << "K (if set) : " << payoff.get_K() <<endl << "Barrier (if set) : " << payoff.get_barrier() << std::endl;
 
     double price = mc_pricing.priceDerivative(N_sim);
         
