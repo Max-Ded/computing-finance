@@ -6,13 +6,21 @@
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
 
+
+/*
+PathGenerator obj with market param (S0,r,T,sigma,pricing_engines)=> generates (with the pricing_engine logic) => Path obj with final price/avg_price/min_price_max_price
+Payoff Obj used to compute payoff of a path obj (with a payoff function and a strike price)
+
+MonteCarloDerivatePricing with the PathGenerator obj generates a bunch of path, computes the payoff with the payoff obj, and averages the prices
+
+*/
 using namespace std;
 
 int main(){
 
     srand(time(0));
 
-    int N_sim = 100000;
+    int N_sim = 1000000;
     double S0 = 100;
     double sigma = 0.5;
     double r=0.1;
@@ -26,50 +34,12 @@ int main(){
     Payoff payoff = Payoff(payoff_func,95,"European call");
     PathGenerator path_generator = PathGenerator(pricing_engine,num_steps,S0,r,T,sigma);
     
-    MonteCarloDerivatePricing mc_pricing = MonteCarloDerivatePricing(N_sim,path_generator,payoff);
+    MonteCarloDerivatePricing mc_pricing = MonteCarloDerivatePricing(path_generator,payoff);
     std :: cout << "Option type : "<< payoff.get_option_desc() << std::endl << "K = " << payoff.get_K() << std::endl;
 
-    double price = mc_pricing.priceDerivative();
+    double price = mc_pricing.priceDerivative(N_sim);
         
     cout << "Monte Carlo price : " << price << endl;
 
     return 0;
 }
-
-// #include <iostream>
-// #include <cmath>
-// #include <cstdlib>
-// #include <ctime>
-// using namespace std;
-
-// double monte_carlo_price(double S0, double r, double sigma, double T, double K, int N)
-// {
-//     double dt = T / static_cast<double>(N);
-//     double total_payoff = 0.0;
-//     srand(time(0)); // seed the random number generator with the current time
-//     for (int i = 0; i < N; i++) {
-//         double eps = rand() / static_cast<double>(RAND_MAX);
-//         double z = sqrt(-2.0 * log(eps)) * cos(2.0 * M_PI * eps);
-//         double S = S0 * exp((r - sigma*sigma/2) * dt + sigma * sqrt(dt) * z);
-//         double payoff = max(S - K, 0.0);
-//         total_payoff += payoff;
-//     }
-//     double expected_payoff = total_payoff / static_cast<double>(N);
-//     double call_price = expected_payoff * exp(-r * T);
-//     return call_price;
-// }
-
-// int main()
-// {
-//     double S0 = 100;  // initial stock price
-//     double r = 0.1;  // risk-free interest rate
-//     double sigma = 0.5;  // volatility
-//     double T = .25;  // time to maturity
-//     double K = 95;  // strike price
-//     int N = 1000000; // number of simulations
-
-//     double price = monte_carlo_price(S0, r, sigma, T, K, N);
-//     cout << "The Monte Carlo price of the call option is " << price << endl;
-
-//     return 0;
-// }

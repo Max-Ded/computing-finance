@@ -17,6 +17,10 @@ using namespace std;
 PathGenerator::PathGenerator(std::function<double(double, double, double, double)> pricing_engine,int num_steps,double S0,double r,double T,double sigma) : pricing_engine(pricing_engine),num_steps(num_steps),S0(S0), r(r), T(T), sigma(sigma){}
 
 Path PathGenerator :: generate_path(){
+    // Generate a Path object from the market parameters attributes of the object
+    // Use the pricing_engine attribute to compute the increments of the stock price S
+    // logs the average value of the Stock, the Max and the Max, for specific payoff function
+    // Returns a Path object with these values
     double dt = T / static_cast<double>(num_steps);
     double S = S0;
 
@@ -79,6 +83,8 @@ double randn() // generates a standard normal random variable
 
 
 double BSM_pricing(double St_1,double r, double sigma, double dt){
+    // Compute St from S(t-1) using the BlackScholesMerton model and market data
+    // dSt = St ( r dt + σ dWt )
     double dW = sqrt(dt) * randn(); // generate a standard normal random variable
     double drift = r * St_1 * dt;
     double diffusion = St_1 * sigma  * dW; //
@@ -87,6 +93,7 @@ double BSM_pricing(double St_1,double r, double sigma, double dt){
 }
 
 double Bachelier_pricing(double St_1,double r, double sigma, double dt){
+    // Compute St from S(t-1) using the Bachelier model and market data
     // dSt =r St dt + σ dWt,
     double dW = sqrt(dt) * randn(); // generate a standard normal random variable
     double St = St_1 + r * St_1 * dt + sigma * dW;
