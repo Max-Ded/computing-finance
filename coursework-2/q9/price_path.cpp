@@ -3,6 +3,7 @@
 #include "price_path.h"
 #include <iostream>
 #include <functional>
+#include <vector>
 
 #ifndef M_PI
 #define M_PI 3.14159
@@ -27,6 +28,8 @@ Path PathGenerator :: generate_path(){
     double min_S = INF;
     double max_S = -INF;
     double avg_S = 0; 
+    vector<double> price_hist(num_steps+1);
+    price_hist[0] = S;
 
     for (int i = 1; i <= num_steps; i++) {
 
@@ -34,9 +37,10 @@ Path PathGenerator :: generate_path(){
         min_S = min(S,min_S);
         max_S = max(S,max_S);
         avg_S += S/num_steps;
+        price_hist[i] = S;
     }
 
-    Path result = Path(min_S,max_S,avg_S,S);
+    Path result = Path(min_S,max_S,avg_S,S,price_hist);
     return result;
 }
 
@@ -54,7 +58,7 @@ double PathGenerator::get_S0(){
 }
 // PATH class impl
 
-Path :: Path(double min_S,double max_S,double avg_S,double ST) : min_S(min_S),max_S(max_S),avg_S(avg_S),ST(ST){}
+Path :: Path(double min_S,double max_S,double avg_S,double ST,vector<double>) : min_S(min_S),max_S(max_S),avg_S(avg_S),ST(ST),price_hist(price_hist){}
 Path :: Path(){}
 
 double Path::get_ST(){
@@ -69,7 +73,9 @@ double Path::get_min_S(){
 double Path::get_avg_S(){
         return avg_S;
 }
-
+vector<double> Path::get_price_hist(){
+    return price_hist;
+}
 
 // PRICING ENGINES
 

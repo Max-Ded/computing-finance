@@ -1,5 +1,6 @@
 #define INF 9999999
 #include <functional>
+#include <vector>
 #ifndef PathGenerator_H
 #define PathGenerator_H
 
@@ -9,13 +10,15 @@ class Path{
         double max_S = INF;
         double avg_S = 0; 
         double ST;
+        std::vector<double> price_hist;
     public:
-        Path(double min_S,double max_S,double avg_S,double ST);
+        Path(double min_S,double max_S,double avg_S,double ST,std::vector<double> price_hist);
         Path();
         double get_ST();
         double get_max_S();
         double get_min_S();
         double get_avg_S();
+        std::vector<double> get_price_hist();
 };
 
 class PathGenerator{
