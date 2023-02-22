@@ -2,7 +2,8 @@
 #include "price_path.h"
 #include <iostream>
 #include <functional>
-
+#include <math.h>
+#include <vector>
 #define min(a,b)            (((a) < (b)) ? (a) : (b))
 #define max(a,b)            (((a) > (b)) ? (a) : (b))
 
@@ -94,4 +95,61 @@ double knock_in_european_put(Path& path,double K,double barrier){
 double diff_payoff(Path& path){
     // Payoff of a dummy option that always return max(St) - min(St)
     return path.get_max_S() - path.get_min_S();
+}
+
+double american_call(Path& path, double K) {
+    // Payoff of an American call with strike K
+    std::vector<double> prices = path.get_price_hist();
+    int n = prices.size();
+    double dt = path.get_dt();
+    std::vector<double> values(n);
+
+    // Initialize values to payoff at maturity
+    for (int i = 0; i < n; i++) {
+        values[i] = max(prices[i] - K, 0.0);
+    }
+
+    // Work backwards through the price vector
+    for (int i = n - 2; i >= 0; i--) {
+
+        // Calculate the expected value at time i
+        double expected_value = 0.0;
+        for (int j = i + 1; j < n; j++) {
+            double discount_factor = std::exp(-path.get_r() * (j - i) * dt);
+            expected_value += discount_factor * max(prices[j] - K, 0.0);
+        }
+        expected_value /= (n - i - 1);
+
+        // Calculate the exercise value at time i
+        values[i] = max(max(prices[i] - K, 0.0), expected_value);
+    }
+    return values[0];
+}
+
+double american_put(Path& path, double K) {
+    // Payoff of an American put with strike K
+    std::vector<double> prices = path.get_price_hist();
+    int n = prices.size();
+    double dt = path.get_dt();
+    std::vector<double> values(n);
+
+    // Initialize values to payoff at maturity
+    for (int i = 0; i < n; i++) {
+        values[i] = max(K-prices[i], 0.0);
+    }
+
+    // Work backwards through the price vector
+    for (int i = n - 2; i >= 0; i--) {
+        // Calculate the expected value at time i
+        double expected_value = 0.0;
+        for (int j = i + 1; j < n; j++) {
+            double discount_factor = std::exp(-path.get_r() * (j - i) * dt);
+            expected_value += discount_factor * max(K-prices[j], 0.0);
+        }
+        expected_value /= (n - i - 1);
+
+        // Calculate the exercise value at time i
+        values[i] = max(max(K-prices[i], 0.0), expected_value);
+    }
+    return values[0];
 }

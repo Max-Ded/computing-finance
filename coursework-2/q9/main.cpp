@@ -20,7 +20,7 @@ int main(){
 
     srand(time(0));
 
-    int N_sim = 1000;
+    int N_sim = 10000;
     double S0 = 100;
     double sigma = 0.5;
     double r=0.1;
@@ -30,8 +30,8 @@ int main(){
     double barrier = 130;
 
     
-    std::function<double(Path&, double)> payoff_func = &european_call;
-    Payoff payoff = Payoff(payoff_func,95,"European call");
+    std::function<double(Path&, double)> payoff_func = &american_call;
+    Payoff payoff = Payoff(payoff_func,95,"American call");
 
     // std::function<double(Path&, double,double)> payoff_func = &knock_out_european_call;
     // Payoff payoff = Payoff(payoff_func,K,barrier,"Knock-out European call");

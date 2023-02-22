@@ -25,6 +25,8 @@ double european_call(Path& path,double K);
 double european_put(Path& path,double K);
 double asian_call(Path& path,double K);
 double asian_put(Path& path,double K);
+double american_call(Path& path,double K);
+double american_put(Path& path,double K);
 double diff_payoff(Path& path);
 double knock_out_european_call(Path& path,double K,double barrier);
 double knock_out_european_put(Path& path,double K,double barrier);

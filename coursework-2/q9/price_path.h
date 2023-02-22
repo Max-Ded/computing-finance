@@ -10,14 +10,23 @@ class Path{
         double max_S = INF;
         double avg_S = 0; 
         double ST;
+        double r;
+        double dt;
+        double sigma;
+        double T;
         std::vector<double> price_hist;
     public:
         Path(double min_S,double max_S,double avg_S,double ST,std::vector<double> price_hist);
+        Path(double min_S,double max_S,double avg_S,double ST,std::vector<double> price_hist,double r,double dt,double sigma,double T);
         Path();
         double get_ST();
         double get_max_S();
         double get_min_S();
         double get_avg_S();
+        double get_r();
+        double get_dt();
+        double get_sigma();
+        double get_T();
         std::vector<double> get_price_hist();
 };
 

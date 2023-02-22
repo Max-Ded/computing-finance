@@ -40,7 +40,7 @@ Path PathGenerator :: generate_path(){
         price_hist[i] = S;
     }
 
-    Path result = Path(min_S,max_S,avg_S,S,price_hist);
+    Path result = Path(min_S,max_S,avg_S,S,price_hist,this->get_r(),dt,this->get_sigma(),this->get_T());
     return result;
 }
 
@@ -58,7 +58,9 @@ double PathGenerator::get_S0(){
 }
 // PATH class impl
 
-Path :: Path(double min_S,double max_S,double avg_S,double ST,vector<double>) : min_S(min_S),max_S(max_S),avg_S(avg_S),ST(ST),price_hist(price_hist){}
+Path :: Path(double min_S,double max_S,double avg_S,double ST,vector<double> price_hist) : min_S(min_S),max_S(max_S),avg_S(avg_S),ST(ST),price_hist(price_hist){}
+Path :: Path(double min_S,double max_S,double avg_S,double ST,vector<double> price_hist,double r,double dt,double sigma,double T) : min_S(min_S),max_S(max_S),avg_S(avg_S),ST(ST),price_hist(price_hist),r(r),sigma(sigma),dt(dt),T(T){}
+
 Path :: Path(){}
 
 double Path::get_ST(){
@@ -72,6 +74,18 @@ double Path::get_min_S(){
 }
 double Path::get_avg_S(){
         return avg_S;
+}
+double Path::get_r(){
+        return r;
+}
+double Path::get_dt(){
+        return dt;
+}
+double Path::get_sigma(){
+        return sigma;
+}
+double Path::get_T(){
+        return T;
 }
 vector<double> Path::get_price_hist(){
     return price_hist;
