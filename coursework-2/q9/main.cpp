@@ -5,7 +5,8 @@
 #include "price_path.h"
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>       /* time */
-
+#include <chrono>
+using namespace std::chrono;
 
 /*
 PathGenerator obj with market param (S0,r,T,sigma,pricing_engines)=> generates (with the pricing_engine logic) => Path obj with final price/avg_price/min_price_max_price
@@ -25,13 +26,13 @@ int main(){
     double sigma = 0.5;
     double r=0.1;
     double T = 0.25;
-    double K = 105.;
-    int num_steps = 100;
-    double barrier = 130;
+    double K = 95.;
+    int num_steps = 1000;
+    double barrier = 0;
 
     
-    std::function<double(Path&, double)> payoff_func = &american_call;
-    Payoff payoff = Payoff(payoff_func,95,"American call");
+    std::function<double(Path&, double)> payoff_func = &european_call;
+    Payoff payoff = Payoff(payoff_func,K,"European call");
 
     // std::function<double(Path&, double,double)> payoff_func = &knock_out_european_call;
     // Payoff payoff = Payoff(payoff_func,K,barrier,"Knock-out European call");
@@ -42,9 +43,12 @@ int main(){
     MonteCarloDerivatePricing mc_pricing = MonteCarloDerivatePricing(path_generator,payoff);
     std :: cout << "Option type : "<< payoff.get_option_desc() << std::endl << "K (if set) : " << payoff.get_K() <<endl << "Barrier (if set) : " << payoff.get_barrier() << std::endl;
 
+    auto start = high_resolution_clock::now();
     double price = mc_pricing.priceDerivative(N_sim);
-        
-    cout << "Monte Carlo price : " << price << endl;
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
 
+    cout << "Monte Carlo price (" << N_sim << " paths in " << duration.count()/1000 << " ms) : " << price << endl;
+    
     return 0;
 }

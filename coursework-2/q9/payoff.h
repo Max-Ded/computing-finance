@@ -7,7 +7,6 @@
 class Payoff{
     private:
         double K;
-        double V;
         double barrier;
         std::string option_desc;
         std::function<double(Path&)> payoff_func;
